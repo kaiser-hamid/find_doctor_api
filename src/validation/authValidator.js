@@ -1,43 +1,17 @@
-const {checkSchema} = require("express-validator");
+const {checkSchema, body} = require("express-validator");
+const {normalizeEmail} = require("validator");
 
-module.exports.login = () => {
-    return checkSchema({
-        email: {
-            trim: true,
-            escape: true,
-            errorMessage: "Email is not valid",
-            isEmail: true,
-            normalizeEmail: {
-                options: {gmail_lowercase: true}
-            },
-        },
-        password: {
-            trim: true,
-            escape: true,
-            errorMessage: "Password is required",
-            notEmpty: true,
+module.exports.loginValidator = [
+    body("email").trim().escape().notEmpty().withMessage("Email is required").normalizeEmail().isEmail().withMessage("Email is not valid"),
+    body("password").trim().escape().notEmpty().withMessage("Password is required"),
+];
+module.exports.changePassValidator = [
+    body("old_password").trim().escape().notEmpty().withMessage("Old password is required"),
+    body("password").trim().escape().notEmpty().withMessage("Password is required").isLength({min: 6}).withMessage("Password must be at least 6 character long"),
+    body("password_confirmation").trim().escape().custom((value, {req}) => {
+        if(value !== req.body.password){
+            throw new Error('Confirm password does not match');
         }
-    })
-}
-module.exports.changePass = () => {
-    return checkSchema({
-        old_password: {
-            trim: true,
-            escape: true,
-            errorMessage: "Old password is required",
-            notEmpty: true,
-        },
-        password: {
-            trim: true,
-            escape: true,
-            errorMessage: "Password is required",
-            notEmpty: true,
-        },
-        password_confirmation: {
-            trim: true,
-            escape: true,
-            errorMessage: "Confirm password is required",
-            notEmpty: true,
-        }
-    })
-}
+        return true;
+    }).withMessage("Confirm password does not match"),
+];

@@ -43,19 +43,22 @@ module.exports.changePassword = async (req, res) => {
         if(errors){
             res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
         }
-        const {email, password} = req.body;
-        const user = await User.findOne({email: email})
+        const {old_password, password} = req.body;
+        const { _id } = req.user;
+        const user = await User.findById(_id);
         if(!user){
-            res.json(responseAPI(false, "User or password doesn't match"));
+            res.json(responseAPI(false, "Something went wrong! User not found"));
         }
-        const isMatched = await bcrypt.compare(password, user.password);
+        const isMatched = await bcrypt.compare(old_password, user.password);
         if(!isMatched){
-            res.json(responseAPI(false, "User or password doesn't match"));
+            res.json(responseAPI(false, "Old password doesn't match"));
         }
-        const token = jwt.sign({
-            user: user
-        }, process.env.AUTH_SECRET, {expiresIn: '1h'});
-        res.json(responseAPI(true, "Logged in successfully", {token, user: userResource(user)}));
+        const newHashForPassword = await bcrypt.hash(password, 10);
+        const result = await User.findOneAndUpdate({ _id }, {password: newHashForPassword});
+        if(result){
+            res.json(responseAPI(true, "Password change successfully"));
+        }
+        res.json(responseAPI(false, "Password change failed"));
     }catch (e){
         res.status(400).json(responseAPI(false, e.message));
     }
