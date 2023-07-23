@@ -37,6 +37,30 @@ module.exports.loginPost = async (req, res) => {
     }
 }
 
+module.exports.changePassword = async (req, res) => {
+    try{
+        const errors = validate(req);
+        if(errors){
+            res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
+        }
+        const {email, password} = req.body;
+        const user = await User.findOne({email: email})
+        if(!user){
+            res.json(responseAPI(false, "User or password doesn't match"));
+        }
+        const isMatched = await bcrypt.compare(password, user.password);
+        if(!isMatched){
+            res.json(responseAPI(false, "User or password doesn't match"));
+        }
+        const token = jwt.sign({
+            user: user
+        }, process.env.AUTH_SECRET, {expiresIn: '1h'});
+        res.json(responseAPI(true, "Logged in successfully", {token, user: userResource(user)}));
+    }catch (e){
+        res.status(400).json(responseAPI(false, e.message));
+    }
+}
+
 module.exports.tempUserInsertPost = async (req, res) => {
     try{
         const user = new User({

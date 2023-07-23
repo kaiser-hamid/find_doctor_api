@@ -19,3 +19,25 @@ module.exports.login = () => {
         }
     })
 }
+module.exports.changePass = () => {
+    return checkSchema({
+        old_password: {
+            trim: true,
+            escape: true,
+            errorMessage: "Old password is required",
+            notEmpty: true,
+        },
+        password: {
+            trim: true,
+            escape: true,
+            errorMessage: "Password is required",
+            notEmpty: true,
+        },
+        password_confirmation: {
+            trim: true,
+            escape: true,
+            errorMessage: "Confirm password is required",
+            notEmpty: true,
+        }
+    })
+}

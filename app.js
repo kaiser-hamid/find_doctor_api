@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
 const mongoose = require("mongoose");
 
 //local
@@ -10,6 +11,9 @@ const {responseAPI} = require("./src/utils/general.util");
 const app = express();
 
 //config
+app.use(cors({
+    origin: ["http://localhost:5173"]
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 

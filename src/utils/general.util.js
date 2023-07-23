@@ -16,5 +16,5 @@ module.exports.validate = (req) => {
 }
 
 module.exports.parseFirstErrorMsg = (errors) => {
-    return errors.length ? Object.values(errors[0]) : "Form validation error!";
+    return errors.length ? Object.values(errors[0])[0] : "Form validation error!";
 }

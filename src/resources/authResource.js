@@ -7,7 +7,8 @@ module.exports.userResource = (data, isCollection = false) => {
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            // gender: data.gender,
+            role: "DIAMOND",
+            gender: data.gender,
             // dob: moment(data.dob).format("DD-MM-YYYY"),
         }
     }
@@ -18,7 +19,8 @@ module.exports.userResource = (data, isCollection = false) => {
             first_name: item.first_name,
             last_name: item.last_name,
             email: item.email,
-            // gender: item.gender,
+            role: "DIAMOND",
+            gender: item.gender,
             // dob: moment(item.dob).format("DD-MM-YYYY"),
         });
     }
