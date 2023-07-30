@@ -1,11 +1,10 @@
-const {checkSchema, body} = require("express-validator");
-const {normalizeEmail} = require("validator");
+const { body} = require("express-validator");
 
-module.exports.loginValidator = [
+module.exports.loginPost = [
     body("email").trim().escape().notEmpty().withMessage("Email is required").normalizeEmail().isEmail().withMessage("Email is not valid"),
     body("password").trim().escape().notEmpty().withMessage("Password is required"),
 ];
-module.exports.changePassValidator = [
+module.exports.changePassword = [
     body("old_password").trim().escape().notEmpty().withMessage("Old password is required"),
     body("password").trim().escape().notEmpty().withMessage("Password is required").isLength({min: 6}).withMessage("Password must be at least 6 character long"),
     body("password_confirmation").trim().escape().custom((value, {req}) => {
