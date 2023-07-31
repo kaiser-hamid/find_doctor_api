@@ -18,6 +18,8 @@ router.post("/password-change", authAdminMiddleware, authValidator.changePasswor
 //Chamber
 router.get("/chamber/form-helper-data", authAdminMiddleware, chamberController.addFormHelperData);
 router.post("/chambers", authAdminMiddleware, multipartData(["image", "logo"]), chamberValidator.saveChamber, chamberController.saveChamber);
+router.get("/chambers", authAdminMiddleware, chamberController.chambers);
+router.delete("/chambers/:id", authAdminMiddleware, chamberController.removeChamber);
 
 
 //router.post("/temp-reg", authController.tempUserInsertPost);

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const {userResource} = require("../../resources/authResource")
+const {userResource} = require("../../resources/admin/authResource")
 const {responseAPI, parseFirstErrorMsg} = require("../../utils/general.util");
 const {validate} = require("../../utils/general.util")
 const User = require("../../models/User");
