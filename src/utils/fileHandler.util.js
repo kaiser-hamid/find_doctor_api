@@ -77,11 +77,16 @@ module.exports.moveUploadedFile = async (file, dest = "public/uploads") => {
     }
 }
 
-module.exports.removeTempUploadedUnusedFiles = (req) => {
-    for (const key in req.files) {
-        for (const file of req.files[key]) {
+module.exports.removeTempUploadedUnusedFiles = ({files}) => {
+    if (!files) {
+        return null;
+    }
+    for (const key in files) {
+        for (const file of files[key]) {
             fs.unlink(file.path, (err) => {
-                console.log("Temp file remove error", err);
+                if (err) {
+                    console.log("Temp file remove error", err);
+                }
             });
         }
     }

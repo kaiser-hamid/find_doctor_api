@@ -38,11 +38,6 @@ module.exports.chambers = async (req, res) => {
 //save
 module.exports.saveChamber = async (req, res) => {
     try {
-        const errors = validate(req);
-        if (errors) {
-            removeTempUploadedUnusedFiles(req);
-            res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
-        }
         const data = await saveChamberDataProcess(req);
         const newChamber = new Chamber(data);
         const result = await newChamber.save();
@@ -101,11 +96,6 @@ module.exports.editFormHelperData = async (req, res) => {
 //update
 module.exports.updateChamber = async (req, res) => {
     try {
-        const errors = validate(req);
-        if (errors) {
-            removeTempUploadedUnusedFiles(req);
-            res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
-        }
         const { id } = req.params;
         const chamber = await Chamber.findById(id);
         if(!chamber){

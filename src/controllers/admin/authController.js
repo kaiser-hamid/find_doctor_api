@@ -16,10 +16,6 @@ module.exports.loginCheckGet = async (req, res) => {
 
 module.exports.loginPost = async (req, res) => {
     try {
-        const errors = validate(req);
-        if (errors) {
-            res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
-        }
         const {email, password} = req.body;
         const user = await User.findOne({email: email})
         if (!user) {
@@ -40,10 +36,6 @@ module.exports.loginPost = async (req, res) => {
 
 module.exports.changePassword = async (req, res) => {
     try {
-        const errors = validate(req);
-        if (errors) {
-            res.json(responseAPI(false, parseFirstErrorMsg(errors), [], errors))
-        }
         const {old_password, password} = req.body;
         const {_id} = req.user;
         const user = await User.findById(_id);
