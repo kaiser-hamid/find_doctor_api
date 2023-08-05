@@ -9,7 +9,14 @@ const userSchema = new mongoose.Schema({
     profile_picture: String,
     gender: String,
     dob: Date,
-    active_status: Number
+    active_status: Number,
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now }
+});
+
+userSchema.pre('save', function(next) {
+    this.updated_at = new Date();
+    next();
 });
 
 module.exports = mongoose.model("User", userSchema);

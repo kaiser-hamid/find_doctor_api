@@ -21,6 +21,13 @@ const chamberSchema = new mongoose.Schema({
     rating: Number,
     active_status: Number,
     remarks: Object,
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now }
+});
+
+chamberSchema.pre('save', function(next) {
+    this.updated_at = new Date();
+    next();
 });
 
 module.exports = mongoose.model("Chamber", chamberSchema);

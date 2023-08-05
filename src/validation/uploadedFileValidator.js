@@ -17,8 +17,7 @@ module.exports = (req, field, rules) => {
             for(const file of req.files[field]){
                 if(!mimesArray.includes(file.mimetype)){
                     const mimes = mimesArray.map(item => item.split("/")[1]);
-                    let mimesStr = mimes.join(", ");
-                    mimesStr = mimesStr.trimEnd(", ")
+                    const mimesStr = mimes.join(", ");
                     throw new Error(`The ${field} file only allows ${mimesStr}`);
                 }
             }

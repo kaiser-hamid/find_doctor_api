@@ -4,7 +4,7 @@ const Upazila = require("../models/Upazila");
 const {responseAPI} = require("../utils/general.util");
 
 module.exports.divisionList = async (req, res) => {
-    try{
+    try {
         const divisions = await Division.aggregate([
             {
                 $project: {
@@ -15,20 +15,21 @@ module.exports.divisionList = async (req, res) => {
                 }
             }
         ]);
-        if(!!divisions.length){
+        if (!!divisions.length) {
             res.json(responseAPI(true, "Division list", {divisions}));
+        } else {
+            res.status(404).json(responseAPI(false, "No data found in database"));
         }
-        res.status(404).json(responseAPI(false, "No data found in database"));
-    }catch (e){
+    } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
 }
 
 module.exports.districtListOverDivision = async (req, res) => {
-    try{
-        const { divisionID } = req.params;
+    try {
+        const {divisionID} = req.params;
         const division = await Division.findById(divisionID);
-        if(!!division.length){
+        if (!!division.length) {
             throw new Error("No valid division id");
         }
         const division_id = division.id.toString();
@@ -45,20 +46,21 @@ module.exports.districtListOverDivision = async (req, res) => {
                 }
             }
         ]);
-        if(!!districts.length){
+        if (!!districts.length) {
             res.json(responseAPI(true, "District list", districts));
+        } else {
+            res.status(404).json(responseAPI(false, "No data found in database"));
         }
-        res.status(404).json(responseAPI(false, "No data found in database"));
-    }catch (e){
+    } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
 }
 
 module.exports.upazilaListOverDistrict = async (req, res) => {
-    try{
-        const { districtID } = req.params;
+    try {
+        const {districtID} = req.params;
         const district = await District.findById(districtID);
-        if(!!district.length){
+        if (!!district.length) {
             throw new Error("No valid district id");
         }
         const district_id = district.id.toString();
@@ -75,11 +77,12 @@ module.exports.upazilaListOverDistrict = async (req, res) => {
                 }
             }
         ]);
-        if(!!upazilas.length){
+        if (!!upazilas.length) {
             res.json(responseAPI(true, "Upazila list", upazilas));
+        } else {
+            res.status(404).json(responseAPI(false, "No data found in database"));
         }
-        res.status(404).json(responseAPI(false, "No data found in database"));
-    }catch (e){
+    } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
 }
