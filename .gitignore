@@ -1,5 +1,5 @@
 .env
 .idea
 package-lock.json
-public/*
+public/uploads/*
 node_modules/*
