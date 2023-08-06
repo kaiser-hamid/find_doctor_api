@@ -31,7 +31,7 @@ module.exports = (req, field, rules) => {
             const maxValue = maxElement.split(/\s*:\s*/)[1];
             for(const file of req.files[field]){
                 if(file.size  > (maxValue*1024)){
-                    throw new Error(`The ${field} file must not exceed the limit of ${maxValue}`);
+                    throw new Error(`The ${field} file must not exceed the limit of ${maxValue} KB`);
                 }
             }
         }

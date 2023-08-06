@@ -4,7 +4,7 @@ module.exports.chamberListResource = (data, isCollection = false) => {
     if(!isCollection){
         return {
             _id: data._id,
-            logo: "kaiser",
+            logo: baseURL+data.logo,
             name: data.name?.en,
             address: data.address?.en,
             operating_hours: data.operating_hours?.en,

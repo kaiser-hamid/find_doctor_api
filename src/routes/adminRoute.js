@@ -1,9 +1,11 @@
 const express = require("express");
 const authController = require("../controllers/admin/authController");
-const chamberController = require("../controllers/admin/chamberController")
+const chamberController = require("../controllers/admin/chamberController");
+const doctorController = require("../controllers/admin/doctorController")
 
 const authValidator = require("../validation/authValidator");
 const chamberValidator = require("../validation/chamberValidator");
+const doctorValidator = require("../validation/doctorValidator");
 
 const {responseAPI} = require("../utils/general.util");
 const authAdminMiddleware = require("../middlewares/authAdminMiddleware");
@@ -16,6 +18,11 @@ const router = express.Router();
 router.get("/auth-check", authAdminMiddleware, authController.loginCheckGet);
 router.post("/login", authValidator.loginPost, validateFormDataMiddleware, authController.loginPost);
 router.post("/password-change", authAdminMiddleware, authValidator.changePassword, validateFormDataMiddleware, authController.changePassword);
+
+//Doctor
+router.get("/doctors", authAdminMiddleware, doctorController.doctors);
+router.post("/doctors", authAdminMiddleware, multipartData(["profile_picture"]), doctorValidator.saveDoctor, validateFormDataMiddleware, doctorController.saveDoctor);
+router.get("/doctor/form-helper-data",authAdminMiddleware, doctorController.addFormHelperData);
 
 //Chamber
 router.get("/chambers", authAdminMiddleware, chamberController.chambers);
