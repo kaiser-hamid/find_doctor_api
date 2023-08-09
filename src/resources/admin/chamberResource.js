@@ -1,3 +1,4 @@
+const he = require('he');
 const {baseURL} = require("../../configs/app");
 
 module.exports.chamberListResource = (data, isCollection = false) => {
@@ -10,7 +11,7 @@ module.exports.chamberListResource = (data, isCollection = false) => {
             operating_hours: data.operating_hours?.en,
             email: data.email,
             phone: data.phone,
-            website: data.website
+            website: he.decode(data.website)
         }
     }
     const collection = [];
@@ -23,7 +24,7 @@ module.exports.chamberListResource = (data, isCollection = false) => {
             operating_hours: item.operating_hours?.en,
             email: item.email,
             phone: item.phone,
-            website: item.website
+            website: he.decode(item.website)
         });
     }
     return collection;

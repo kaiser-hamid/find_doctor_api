@@ -9,7 +9,7 @@ const {removeTempUploadedUnusedFiles, removeUserFiles} = require("../../utils/fi
 const {baseURL} = require("../../configs/app");
 const {doctorListResource} = require("../../resources/admin/doctorResource");
 const mongoose = require("mongoose");
-const {saveDoctorDataProcess} = require("../../services/admin/doctorService");
+const {saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess} = require("../../services/admin/doctorService");
 
 module.exports.doctors = async (req, res) => {
     try {
@@ -52,60 +52,38 @@ module.exports.saveDoctor = async (req, res) => {
 module.exports.editFormHelperData = async (req, res) => {
     try {
         const {id} = req.params;
-        const chamber = await Chamber.findById(id);
-        if(!chamber){
+        const doctor = await Doctor.findById(id);
+        if(!doctor){
             throw new Error("No record found");
         }
-        const divisions = await Division.aggregate([{
-            $project: { _id: 0, id: "$id", label: "$name", value: "$_id" }
+        const chambers = await Chamber.aggregate([{
+            $project: { id: "$_id", label: "$name.en", value: "$_id" }
         }]);
-        if(!divisions.length){
-            throw new Error("Failed to load division");
+        if(!chambers.length){
+            throw new Error("Failed to load chambers");
         }
-        const districts = await District.aggregate([
-            {
-                $match: { _id: chamber.district?._id}
-            },
-            {
-                $project: { _id: 0, id: "$id", label: "$name", value: "$_id" }
-            }
-        ]);
-        if(!districts.length){
-            throw new Error("Failed to load district");
-        }
-        const upazilas = await Upazila.aggregate([
-            {
-                $match: { _id: chamber.upazila?._id}
-            },
-            {
-                $project: { _id: 0, id: "$id", label: "$name", value: "$_id" }
-            }
-        ]);
-        if(!upazilas.length){
-            throw new Error("Failed to load area");
-        }
-        const data = prepareEditFormData(chamber);
-        res.json(responseAPI(true, "Chamber record", {data, divisions, districts, upazilas}));
+        const data = prepareEditFormData(doctor);
+        res.json(responseAPI(true, "Chamber record", {data, chambers}));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
 }
 
 //update
-module.exports.updateChamber = async (req, res) => {
+module.exports.updateDoctor = async (req, res) => {
     try {
         const { id } = req.params;
-        const chamber = await Chamber.findById(id);
-        if(!chamber){
+        const doctor = await Doctor.findById(id);
+        if(!doctor){
             throw new Error("No record found");
         }
-        const {data, deleteableFilePaths} = await updateChamberDataProcess(req, chamber);
-        const result = await Chamber.findByIdAndUpdate(id, data);
+        const {data, deleteableFilePaths} = await updateDoctorDataProcess(req, doctor);
+        const result = await Doctor.findByIdAndUpdate(id, data);
         if (result) {
             if(deleteableFilePaths.length){
                removeUserFiles(deleteableFilePaths);
             }
-            res.json(responseAPI(true, "Chamber has been saved successfully"));
+            res.json(responseAPI(true, "Doctor has been saved successfully"));
         } else {
             throw new Error("Data cannot be updated");
         }
@@ -115,13 +93,13 @@ module.exports.updateChamber = async (req, res) => {
 }
 
 //remove
-module.exports.removeChamber = async (req, res) => {
+module.exports.removeDoctor = async (req, res) => {
     try {
         const {id} = req.params;
-        const chamber = await Chamber.findById(id);
-        const removableFiles = chamberRemovableFiles(chamber);
+        const doctor = await Doctor.findById(id);
+        const removableFiles = doctorRemovableFiles(doctor);
         removeUserFiles(removableFiles);
-        const result = chamber.deleteOne();
+        const result = doctor.deleteOne();
         if (result) {
             res.json(responseAPI(true, "Item removed"));
         } else {
