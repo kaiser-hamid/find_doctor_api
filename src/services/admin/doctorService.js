@@ -3,7 +3,7 @@ const Chamber = require("../../models/Chamber");
 const {moveUploadedFile} = require("../../utils/fileHandler.util");
 const {baseURL} = require("../../configs/app");
 
-const getChambersData = async (ids) => {
+const wrap__getChambersData = async (ids) => {
     try {
         const chambers = await Chamber.find({"_id": {$in: ids}}, {name: 1});
         if (chambers.length) {
@@ -23,7 +23,6 @@ module.exports.saveDoctorDataProcess = async ({body, files}) => {
             profilePicturePath = await moveUploadedFile(files.profile_picture[0], "public/uploads/doctors");
         }
     }
-    const chambers = await getChambersData(body.chamber);
     const data = {
         first_name: {
             en: body.first_name,
@@ -42,7 +41,6 @@ module.exports.saveDoctorDataProcess = async ({body, files}) => {
             bn: body.address_bn
         },
         bmdc_reg_no: body.bmdc_reg_no,
-        chamber: body.chamber ? chambers : [],
         speciality: body.speciality || [],
         qualification: body.qualification || [],
         education: body.education || [],
@@ -92,7 +90,6 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
             }
         }
     }
-    const chambers = await getChambersData(body.chamber);
     const data = {
         first_name: {
             en: body.first_name,
@@ -111,7 +108,6 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
             bn: body.address_bn
         },
         bmdc_reg_no: body.bmdc_reg_no,
-        chamber: body.chamber ? chambers : [],
         speciality: body.speciality || [],
         qualification: body.qualification || [],
         education: body.education || [],

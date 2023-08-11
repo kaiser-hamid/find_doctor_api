@@ -56,14 +56,8 @@ module.exports.editFormHelperData = async (req, res) => {
         if(!doctor){
             throw new Error("No record found");
         }
-        const chambers = await Chamber.aggregate([{
-            $project: { id: "$_id", label: "$name.en", value: "$_id" }
-        }]);
-        if(!chambers.length){
-            throw new Error("Failed to load chambers");
-        }
         const data = prepareEditFormData(doctor);
-        res.json(responseAPI(true, "Chamber record", {data, chambers}));
+        res.json(responseAPI(true, "Chamber record", { data }));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
