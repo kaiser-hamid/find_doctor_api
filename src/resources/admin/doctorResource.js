@@ -11,6 +11,7 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             address: data.address?.en,
             bmdc_reg_no: data.bmdc_reg_no,
             speciality: data.speciality,
+            chamber: data.chamber ? data.chamber?.map(item => item.name.en) : []
         }
     }
     const collection = [];
@@ -24,7 +25,9 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             address: item.address?.en,
             bmdc_reg_no: item.bmdc_reg_no,
             speciality: item.speciality,
+            chamber: item.chamber ? item.chamber?.map(item => item.name.en) : []
         });
     }
     return collection;
 }
+

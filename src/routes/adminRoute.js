@@ -22,10 +22,14 @@ router.post("/password-change", authAdminMiddleware, authValidator.changePasswor
 //Doctor
 router.get("/doctors", authAdminMiddleware, doctorController.doctors);
 router.post("/doctors", authAdminMiddleware, multipartData(["profile_picture"]), doctorValidator.saveDoctor, validateFormDataMiddleware, doctorController.saveDoctor);
-router.get("/doctor/form-helper-data",authAdminMiddleware, doctorController.addFormHelperData);
+// router.get("/doctor/form-helper-data",authAdminMiddleware, doctorController.addFormHelperData);
 router.get("/doctors/:id/edit", authAdminMiddleware, doctorController.editFormHelperData);
 router.put("/doctors/:id/update", authAdminMiddleware, multipartData(["profile_picture"]), doctorValidator.updateDoctor, validateFormDataMiddleware, doctorController.updateDoctor);
 router.delete("/doctors/:id", authAdminMiddleware, doctorController.removeDoctor);
+
+//Assign chamber
+router.get("/assign-chamber/:id", authAdminMiddleware, doctorController.assignChamberFormData);
+router.put("/assign-chamber/:id", authAdminMiddleware, doctorController.doctorChamberUpdate);
 
 //Chamber
 router.get("/chambers", authAdminMiddleware, chamberController.chambers);

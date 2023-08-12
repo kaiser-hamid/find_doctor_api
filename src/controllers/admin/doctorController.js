@@ -9,7 +9,9 @@ const {removeTempUploadedUnusedFiles, removeUserFiles} = require("../../utils/fi
 const {baseURL} = require("../../configs/app");
 const {doctorListResource} = require("../../resources/admin/doctorResource");
 const mongoose = require("mongoose");
-const {saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess} = require("../../services/admin/doctorService");
+const {saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess,
+    updateDoctorChamberDataProcess, prepareChamberAssignFormData
+} = require("../../services/admin/doctorService");
 
 module.exports.doctors = async (req, res) => {
     try {
@@ -22,6 +24,7 @@ module.exports.doctors = async (req, res) => {
             address: 1,
             bmdc_reg_no: 1,
             speciality: 1,
+            chamber: 1,
         });
         if (chambers.length) {
             res.json(responseAPI(true, "Doctor list", doctorListResource(chambers, true)));
@@ -104,15 +107,56 @@ module.exports.removeDoctor = async (req, res) => {
     }
 }
 
-//form helper
-module.exports.addFormHelperData = async (req, res) => {
+//Assign chamber
+module.exports.doctorChamberUpdate = async (req, res) => {
+
     try {
-        const chambers = await Chamber.aggregate([{ $project: { _id: 0, id: "$_id", label: "$name.en", value: "$_id"}}]);
-        if (!!chambers.length) {
-            res.json(responseAPI(true, "Chamber list", {chambers}));
-        } else {
-            res.status(404).json(responseAPI(false, "No data found in database"));
+        const { id } = req.params;
+        const doctor = await Doctor.findById(id);
+        if(!doctor){
+            throw new Error("No record found");
         }
+        const data = await updateDoctorChamberDataProcess(req);
+        doctor.chamber = data;
+        const result = await doctor.save();
+        if (result) {
+            res.json(responseAPI(true, "Chambers have been assigned successfully"));
+        } else {
+            throw new Error("Data cannot be updated");
+        }
+    } catch (e) {
+        res.status(400).json(responseAPI(false, e.message));
+    }
+}
+
+//form helper
+// module.exports.addFormHelperData = async (req, res) => {
+//     try {
+//         const chambers = await Chamber.aggregate([{ $project: { _id: 0, id: "$_id", label: "$name.en", value: "$_id"}}]);
+//         if (!!chambers.length) {
+//             res.json(responseAPI(true, "Chamber list", {chambers}));
+//         } else {
+//             res.status(404).json(responseAPI(false, "No data found in database"));
+//         }
+//     } catch (e) {
+//         res.status(400).json(responseAPI(false, e.message));
+//     }
+// }
+
+module.exports.assignChamberFormData = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const chambers = await Chamber.aggregate([{ $project: { _id: 0, id: "$_id", label: "$name.en", value: "$_id", sub: "$upazila.name.en"}}]);
+        if(!chambers.length){
+            throw new Error("No chamber found!");
+        }
+        const doctor = await Doctor.findById(id);
+        if(!doctor){
+            throw new Error("No record found!");
+        }
+        const doctor_chamber = prepareChamberAssignFormData(doctor.chamber);
+        const doctor_name = `${doctor.first_name?.en} ${doctor.last_name?.en}`;
+        res.json(responseAPI(true, "Chamber list", {doctor_name, doctor_chamber, chambers}));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }

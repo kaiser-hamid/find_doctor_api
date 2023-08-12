@@ -3,7 +3,7 @@ const Chamber = require("../../models/Chamber");
 const {moveUploadedFile} = require("../../utils/fileHandler.util");
 const {baseURL} = require("../../configs/app");
 
-const wrap__getChambersData = async (ids) => {
+const getChambersData = async (ids) => {
     try {
         const chambers = await Chamber.find({"_id": {$in: ids}}, {name: 1});
         if (chambers.length) {
@@ -118,6 +118,43 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
         data.profile_picture = profilePicturePath;
     }
     return {data, deleteableFilePaths};
+}
+
+module.exports.prepareChamberAssignFormData = (chambers) => {
+    if(!chambers){
+        return [];
+    }
+    const data = chambers.map(item => {
+        return {
+            chamber_id: item._id,
+            schedule_start: item.schedule.start,
+            schedule_end: item.schedule.end,
+        }
+    });
+    return data;
+}
+module.exports.updateDoctorChamberDataProcess = async ({body}) => {
+    let data = []
+    if(!body.chamber){
+        return data;
+    }
+    const chamberIds = Object.keys(body.chamber);
+    let updatedChambers = await getChambersData(chamberIds);
+    if(!updatedChambers.length){
+        throw new Error("Chambers not found");
+    }
+    data = updatedChambers.map(item => {
+        const {schedule_start, schedule_end} = body.chamber[item._id];
+        return {
+            _id: item._id,
+            name: item.name,
+            schedule: {
+                start: schedule_start,
+                end: schedule_end
+            }
+        };
+    });
+    return data;
 }
 
 module.exports.doctorRemovableFiles = (doctor) => {
