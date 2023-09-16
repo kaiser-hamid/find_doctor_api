@@ -25,7 +25,7 @@ app.use((req, res) => {
 })
 
 mongoose
-    .connect("mongodb://localhost:27017/find_dr")
+    .connect("mongodb://127.0.0.1:27017/find_dr")
     .then(response => {
         app.listen(3000);
     })
