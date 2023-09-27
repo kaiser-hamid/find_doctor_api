@@ -40,11 +40,18 @@ module.exports.saveDoctorDataProcess = async ({body, files}) => {
             en: body.address,
             bn: body.address_bn
         },
+        about_doctor: {
+            en: body.about_doctor,
+            bn: body.about_doctor_bn,
+        },
+        experience: {
+            en: body.experience,
+            bn: body.experience_bn
+        },
         bmdc_reg_no: body.bmdc_reg_no,
         speciality: body.speciality || [],
         qualification: body.qualification || [],
         education: body.education || [],
-        experience: body.experience || [],
         language: body.language || [],
     }
     if (profilePicturePath) {
@@ -67,13 +74,16 @@ module.exports.prepareEditFormData = (doctor) => {
         }),
         gender: doctor.gender,
         dob: doctor.dob,
+        bmdc_reg_no: doctor.bmdc_reg_no,
         address: doctor.address?.en,
         address_bn: doctor.address?.bn,
-        bmdc_reg_no: doctor.bmdc_reg_no,
+        about_doctor: doctor.about_doctor?.en,
+        about_doctor_bn: doctor.about_doctor?.bn,
+        experience: doctor.experience?.en,
+        experience_bn: doctor.experience?.bn,
         speciality: doctor.speciality,
         qualification: doctor.qualification,
         education: doctor.education,
-        experience: doctor.experience,
         language: doctor.language,
     }
     return data;
@@ -107,11 +117,18 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
             en: body.address,
             bn: body.address_bn
         },
+        about_doctor: {
+            en: body.about_doctor,
+            bn: body.about_doctor_bn,
+        },
+        experience: {
+            en: body.experience,
+            bn: body.experience_bn
+        },
         bmdc_reg_no: body.bmdc_reg_no,
         speciality: body.speciality || [],
         qualification: body.qualification || [],
         education: body.education || [],
-        experience: body.experience || [],
         language: body.language || [],
     }
     if (profilePicturePath) {
@@ -121,37 +138,41 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
 }
 
 module.exports.prepareChamberAssignFormData = (chambers) => {
-    if(!chambers){
+    if (!chambers) {
         return [];
     }
     const data = chambers.map(item => {
         return {
             chamber_id: item._id,
+            phone: item.phone,
             schedule_start: item.schedule.start,
             schedule_end: item.schedule.end,
+            week_days: item.week_days,
         }
     });
     return data;
 }
 module.exports.updateDoctorChamberDataProcess = async ({body}) => {
     let data = []
-    if(!body.chamber){
+    if (!body.chamber) {
         return data;
     }
     const chamberIds = Object.keys(body.chamber);
     let updatedChambers = await getChambersData(chamberIds);
-    if(!updatedChambers.length){
+    if (!updatedChambers.length) {
         throw new Error("Chambers not found");
     }
     data = updatedChambers.map(item => {
-        const {schedule_start, schedule_end} = body.chamber[item._id];
+        const {phone, schedule_start, schedule_end, week_days} = body.chamber[item._id];
         return {
             _id: item._id,
             name: item.name,
+            phone,
             schedule: {
                 start: schedule_start,
                 end: schedule_end
-            }
+            },
+            week_days
         };
     });
     return data;

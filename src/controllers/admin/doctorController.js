@@ -1,14 +1,8 @@
-const ObjectId = require('mongoose').Types.ObjectId;
 const {responseAPI, validate, parseFirstErrorMsg} = require("../../utils/general.util");
-const Division = require("../../models/Division");
-const District = require("../../models/District");
-const Upazila = require("../../models/Upazila");
 const Chamber = require("../../models/Chamber")
 const Doctor = require("../../models/Doctor")
-const {removeTempUploadedUnusedFiles, removeUserFiles} = require("../../utils/fileHandler.util");
-const {baseURL} = require("../../configs/app");
+const {removeUserFiles} = require("../../utils/fileHandler.util");
 const {doctorListResource} = require("../../resources/admin/doctorResource");
-const mongoose = require("mongoose");
 const {saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess,
     updateDoctorChamberDataProcess, prepareChamberAssignFormData
 } = require("../../services/admin/doctorService");

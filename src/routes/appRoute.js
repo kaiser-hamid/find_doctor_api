@@ -4,6 +4,7 @@ const utilityController = require("../controllers/utilityController");
 
 const {responseAPI} = require("../utils/general.util");
 const homeController = require("../controllers/homeController");
+const doctorController = require("../controllers/DoctorController");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -12,6 +13,13 @@ router.get("/", (req, res) => {
 
 //home page
 router.get('/init-home-page', homeController.homePageInitData);
+
+//doctors
+router.get('/doctors', doctorController.list);
+router.get('/doctors/:id', doctorController.details);
+
+//chambers
+router.get('/chambers', utilityController.chamberList);
 
 //Utility
 router.get("/division-options", utilityController.divisionList);

@@ -1,7 +1,23 @@
 const Division = require("../models/Division");
 const District = require("../models/District");
 const Upazila = require("../models/Upazila");
+const Chamber = require("../models/Chamber");
+const {chamberListResource} = require('../resources/chamberResource');
+
 const {responseAPI} = require("../utils/general.util");
+
+module.exports.chamberList = async (req, res) => {
+    try {
+        const chambers = await Chamber.find();
+        if (!chambers.length) {
+            throw new Error("No record found");
+        }
+        const chamberData = chamberListResource(chambers, true);
+        res.json(responseAPI(true, "Chamber F list", chamberData));
+    } catch (e) {
+        res.status(400).json(responseAPI(false, e.message, e.stack));
+    }
+}
 
 module.exports.divisionList = async (req, res) => {
     try {
