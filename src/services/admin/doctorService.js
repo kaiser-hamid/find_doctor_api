@@ -141,10 +141,13 @@ module.exports.prepareChamberAssignFormData = (chambers) => {
     if (!chambers) {
         return [];
     }
-    const data = chambers.map(item => {
+    const data = chambers?.map(item => {
+        let phone = item.phone?.map(ph => {
+            return {label: ph, value: ph};
+        });
         return {
             chamber_id: item._id,
-            phone: item.phone,
+            phone,
             schedule_start: item.schedule.start,
             schedule_end: item.schedule.end,
             week_days: item.week_days,

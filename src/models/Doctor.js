@@ -15,7 +15,7 @@ const doctorSchema = new mongoose.Schema({
     speciality: Object,
     qualification: Object,
     experience: Object,
-    chamber: Object,
+    chamber: [Object],
     language: Object,
     rating: {type: Number, default: 0},
     active_status: {type: Number, default: 0},

@@ -23,6 +23,7 @@ module.exports.chambers = async (req, res) => {
             phone: 1,
             email: 1,
             website: 1,
+            week_days: 1,
             operating_hours: 1
         });
         if (chambers.length) {
