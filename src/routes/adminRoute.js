@@ -33,9 +33,9 @@ router.put("/assign-chamber/:id", authAdminMiddleware, doctorController.doctorCh
 
 //Chamber
 router.get("/chambers", authAdminMiddleware, chamberController.chambers);
-router.post("/chambers", authAdminMiddleware, multipartData(["image", "logo"]), chamberValidator.saveChamber, validateFormDataMiddleware, chamberController.saveChamber);
+router.post("/chambers", authAdminMiddleware, multipartData(["logo"]), chamberValidator.saveChamber, validateFormDataMiddleware, chamberController.saveChamber);
 router.get("/chambers/:id/edit", authAdminMiddleware, chamberController.editFormHelperData);
-router.put("/chambers/:id/update", authAdminMiddleware, multipartData(["image", "logo"]), chamberValidator.updateChamber, validateFormDataMiddleware, chamberController.updateChamber);
+router.put("/chambers/:id/update", authAdminMiddleware, multipartData(["logo"]), chamberValidator.updateChamber, validateFormDataMiddleware, chamberController.updateChamber);
 router.delete("/chambers/:id", authAdminMiddleware, chamberController.removeChamber);
 router.get("/chamber/form-helper-data", authAdminMiddleware, chamberController.addFormHelperData);
 

@@ -41,8 +41,8 @@ const getDoctorChambers = (chambers) => {
                 longitude: chamber._id.geo_location?.get('coordinates')[0],
             },
             schedule: {
-                start: moment("2000-12-31 "+ chamber.schedule.start).format('h:ma'),
-                end: moment("2000-12-31 "+ chamber.schedule.end).format('h:ma')
+                start: moment("2000-12-31 "+ chamber.schedule.start).format('hh:mma'),
+                end: moment("2000-12-31 "+ chamber.schedule.end).format('hh:mma')
             },
             phone: chamber.phone,
             week_days: chamber.week_days,
