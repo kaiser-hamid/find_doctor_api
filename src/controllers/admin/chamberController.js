@@ -3,9 +3,9 @@ const {responseAPI, validate, parseFirstErrorMsg} = require("../../utils/general
 const Division = require("../../models/Division");
 const District = require("../../models/District");
 const Upazila = require("../../models/Upazila");
-const Chamber = require("../../models/Chamber")
+const Chamber = require("../../models/Chamber");
+const Service = require("../../models/Service");
 const {
-    addChamberDataProcess,
     saveChamberDataProcess,
     chamberRemovableFiles, prepareEditFormData, updateChamberDataProcess
 } = require("../../services/admin/chamberService");
@@ -87,8 +87,19 @@ module.exports.editFormHelperData = async (req, res) => {
         if(!upazilas.length){
             throw new Error("Failed to load area");
         }
+        const services = await Service.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en",
+                }
+            }
+        ]);
         const data = prepareEditFormData(chamber);
-        res.json(responseAPI(true, "Chamber record", {data, divisions, districts, upazilas}));
+        res.json(responseAPI(true, "Chamber record", {data, services, divisions, districts, upazilas}));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
@@ -148,11 +159,20 @@ module.exports.addFormHelperData = async (req, res) => {
                 }
             }
         ]);
-        if (!!divisions.length) {
-            res.json(responseAPI(true, "Division list", {divisions}));
-        } else {
-            res.status(404).json(responseAPI(false, "No data found in database"));
-        }
+        const services = await Service.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en",
+                }
+            }
+        ]);
+
+
+        res.json(responseAPI(true, "Division list", {divisions, services}));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }

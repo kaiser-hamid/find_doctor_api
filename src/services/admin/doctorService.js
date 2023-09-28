@@ -35,24 +35,16 @@ module.exports.saveDoctorDataProcess = async ({body, files}) => {
         phone: body.phone,
         email: body.email,
         gender: body.gender,
-        dob: body.dob,
-        address: {
-            en: body.address,
-            bn: body.address_bn
-        },
         about_doctor: {
             en: body.about_doctor,
             bn: body.about_doctor_bn,
         },
-        experience: {
-            en: body.experience,
-            bn: body.experience_bn
-        },
         bmdc_reg_no: body.bmdc_reg_no,
+        experience: body.experience,
+        institute: body.institute,
+        designation: body.designation,
+        degree: body.degree,
         speciality: body.speciality || [],
-        qualification: body.qualification || [],
-        education: body.education || [],
-        language: body.language || [],
     }
     if (profilePicturePath) {
         data.profile_picture = profilePicturePath;
@@ -69,22 +61,20 @@ module.exports.prepareEditFormData = (doctor) => {
         phone: doctor.phone,
         email: doctor.email,
         profile_picture_preview: baseURL + doctor.profile_picture,
-        chamber: doctor.chamber?.map(c => {
-            return {id: c._id, label: c.name?.en, value: c._id}
-        }),
+        // chamber: doctor.chamber?.map(c => {
+        //     return {id: c._id, label: c.name?.en, value: c._id}
+        // }),
         gender: doctor.gender,
-        dob: doctor.dob,
         bmdc_reg_no: doctor.bmdc_reg_no,
-        address: doctor.address?.en,
-        address_bn: doctor.address?.bn,
         about_doctor: doctor.about_doctor?.en,
         about_doctor_bn: doctor.about_doctor?.bn,
-        experience: doctor.experience?.en,
-        experience_bn: doctor.experience?.bn,
+        experience: doctor.experience,
+        degree: doctor.degree?.map(d => {
+            return {id: d, label: d, value: d}
+        }),
+        designation: he.decode(doctor.designation),
+        institute: he.decode(doctor.institute),
         speciality: doctor.speciality,
-        qualification: doctor.qualification,
-        education: doctor.education,
-        language: doctor.language,
     }
     return data;
 }
@@ -112,24 +102,16 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
         phone: body.phone,
         email: body.email,
         gender: body.gender,
-        dob: body.dob,
-        address: {
-            en: body.address,
-            bn: body.address_bn
-        },
         about_doctor: {
             en: body.about_doctor,
             bn: body.about_doctor_bn,
         },
-        experience: {
-            en: body.experience,
-            bn: body.experience_bn
-        },
         bmdc_reg_no: body.bmdc_reg_no,
+        experience: body.experience,
+        institute: body.institute,
+        degree: body.degree,
+        designation: body.designation,
         speciality: body.speciality || [],
-        qualification: body.qualification || [],
-        education: body.education || [],
-        language: body.language || [],
     }
     if (profilePicturePath) {
         data.profile_picture = profilePicturePath;

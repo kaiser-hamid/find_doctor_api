@@ -1,9 +1,13 @@
 const {responseAPI, validate, parseFirstErrorMsg} = require("../../utils/general.util");
-const Chamber = require("../../models/Chamber")
-const Doctor = require("../../models/Doctor")
+const Chamber = require("../../models/Chamber");
+const Doctor = require("../../models/Doctor");
+const Designation = require("../../models/Designation");
+const Institute = require("../../models/Institute");
+const Speciality = require("../../models/Speciality");
 const {removeUserFiles} = require("../../utils/fileHandler.util");
 const {doctorListResource} = require("../../resources/admin/doctorResource");
-const {saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess,
+const {
+    saveDoctorDataProcess, doctorRemovableFiles, prepareEditFormData, updateDoctorDataProcess,
     updateDoctorChamberDataProcess, prepareChamberAssignFormData
 } = require("../../services/admin/doctorService");
 
@@ -30,6 +34,47 @@ module.exports.doctors = async (req, res) => {
     }
 }
 
+module.exports.addFormHelperData = async (req, res) => {
+    try {
+        const designations = await Designation.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        const institutes = await Institute.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        const specialities = await Speciality.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        res.json(responseAPI(true, "Doctor form data", {institutes, designations, specialities}));
+    } catch (e) {
+        res.status(400).json(responseAPI(false, e.message));
+    }
+}
+
 //save
 module.exports.saveDoctor = async (req, res) => {
     try {
@@ -50,11 +95,44 @@ module.exports.editFormHelperData = async (req, res) => {
     try {
         const {id} = req.params;
         const doctor = await Doctor.findById(id);
-        if(!doctor){
+        if (!doctor) {
             throw new Error("No record found");
         }
         const data = prepareEditFormData(doctor);
-        res.json(responseAPI(true, "Chamber record", { data }));
+        const designations = await Designation.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        const institutes = await Institute.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        const specialities = await Speciality.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            }
+        ]);
+        res.json(responseAPI(true, "Chamber record", {data, designations, institutes, specialities}));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
@@ -63,16 +141,16 @@ module.exports.editFormHelperData = async (req, res) => {
 //update
 module.exports.updateDoctor = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
         const doctor = await Doctor.findById(id);
-        if(!doctor){
+        if (!doctor) {
             throw new Error("No record found");
         }
         const {data, deleteableFilePaths} = await updateDoctorDataProcess(req, doctor);
         const result = await Doctor.findByIdAndUpdate(id, data);
         if (result) {
-            if(deleteableFilePaths.length){
-               removeUserFiles(deleteableFilePaths);
+            if (deleteableFilePaths.length) {
+                removeUserFiles(deleteableFilePaths);
             }
             res.json(responseAPI(true, "Doctor has been saved successfully"));
         } else {
@@ -105,9 +183,9 @@ module.exports.removeDoctor = async (req, res) => {
 module.exports.doctorChamberUpdate = async (req, res) => {
 
     try {
-        const { id } = req.params;
+        const {id} = req.params;
         const doctor = await Doctor.findById(id);
-        if(!doctor){
+        if (!doctor) {
             throw new Error("No record found");
         }
         const data = await updateDoctorChamberDataProcess(req);
@@ -140,12 +218,20 @@ module.exports.doctorChamberUpdate = async (req, res) => {
 module.exports.assignChamberFormData = async (req, res) => {
     try {
         const {id} = req.params;
-        const chambers = await Chamber.aggregate([{ $project: { _id: 0, id: "$_id", label: "$name.en", value: "$_id", sub: "$upazila.name.en"}}]);
-        if(!chambers.length){
+        const chambers = await Chamber.aggregate([{
+            $project: {
+                _id: 0,
+                id: "$_id",
+                label: "$name.en",
+                value: "$_id",
+                sub: "$upazila.name.en"
+            }
+        }]);
+        if (!chambers.length) {
             throw new Error("No chamber found!");
         }
         const doctor = await Doctor.findById(id);
-        if(!doctor){
+        if (!doctor) {
             throw new Error("No record found!");
         }
         const doctor_chamber = prepareChamberAssignFormData(doctor.chamber);
