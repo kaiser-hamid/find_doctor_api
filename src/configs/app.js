@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports.environment = process.env.ENVIRONMENT || "local";
 module.exports.port = process.env.PORT || "3000";
 module.exports.baseURL = process.env.BASE_URL || "http://localhost:3000/";

@@ -29,6 +29,7 @@ mongoose
     .connect(db_endpoint)
     .then(response => {
         app.listen(port);
+        console.log("port", port)
     })
     .catch(error => {
         console.log("Mongoose connection error: "+ error)
