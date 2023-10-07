@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const {port, db_endpoint} = require("./src/configs/app")
 
 //local
 const adminRoute = require("./src/routes/adminRoute");
@@ -25,9 +26,9 @@ app.use((req, res) => {
 })
 
 mongoose
-    .connect("mongodb://127.0.0.1:27017/find_dr")
+    .connect(db_endpoint)
     .then(response => {
-        app.listen(3000);
+        app.listen(port);
     })
     .catch(error => {
         console.log("Mongoose connection error: "+ error)

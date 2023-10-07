@@ -61,9 +61,6 @@ module.exports.prepareEditFormData = (doctor) => {
         phone: doctor.phone,
         email: doctor.email,
         profile_picture_preview: baseURL + doctor.profile_picture,
-        // chamber: doctor.chamber?.map(c => {
-        //     return {id: c._id, label: c.name?.en, value: c._id}
-        // }),
         gender: doctor.gender,
         bmdc_reg_no: doctor.bmdc_reg_no,
         about_doctor: doctor.about_doctor?.en,
@@ -72,8 +69,8 @@ module.exports.prepareEditFormData = (doctor) => {
         degree: doctor.degree?.map(d => {
             return {id: d, label: d, value: d}
         }),
-        designation: he.decode(doctor.designation),
-        institute: he.decode(doctor.institute),
+        designation: doctor.designation ? he.decode(doctor.designation) : "",
+        institute: doctor.institute ? he.decode(doctor.institute) : "",
         speciality: doctor.speciality,
     }
     return data;
