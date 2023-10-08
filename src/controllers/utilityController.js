@@ -15,7 +15,7 @@ module.exports.chamberList = async (req, res) => {
         const chamberData = chamberListResource(chambers, true);
         res.json(responseAPI(true, "Chamber F list", chamberData));
     } catch (e) {
-        res.status(400).json(responseAPI(false, e.message, e.stack));
+        res.status(400).json(responseAPI(false, e.message));
     }
 }
 
