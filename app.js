@@ -13,7 +13,7 @@ const app = express();
 
 //config
 app.use(cors({
-    origin: ["http://localhost:5173"]
+    origin: ["http://localhost:5173", "https://admin.sasthobondhu.com", "https://sasthobondhu.com"]
 }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
