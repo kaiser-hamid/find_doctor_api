@@ -6,8 +6,8 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             id: data._id,
             name: {en: `${data.first_name?.en} ${data.last_name?.en}`, bn: `${data.first_name?.bn} ${data.last_name?.bn}`},
             profile_picture: baseURL + data.profile_picture,
-            speciality: data.speciality,
-            education: data.education
+            designation: data.designation,
+            degree: data.degree
         }
     }
     const collection = [];
@@ -16,8 +16,8 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             id: item._id,
             name: {en: `${item.first_name?.en} ${item.last_name?.en}`, bn: `${item.first_name?.bn} ${item.last_name?.bn}`},
             profile_picture: baseURL + item.profile_picture,
-            speciality: item.speciality,
-            education: item.education
+            designation: item.designation,
+            degree: item.degree
         });
     }
     return collection;

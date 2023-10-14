@@ -9,8 +9,8 @@ module.exports.list = async (req, res) => {
         const doctors = await Doctor.find().select({
             first_name: 1,
             last_name: 1,
-            speciality: 1,
-            education: 1,
+            degree: 1,
+            designation: 1,
             profile_picture: 1
         });
         if (!doctors.length) {

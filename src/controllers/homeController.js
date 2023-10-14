@@ -21,7 +21,7 @@ module.exports.homePageInitData = async (req, res) => {
                 }
             }
         ]);
-        const doctors = await Doctor.find().select({first_name: 1, last_name: 1, speciality: 1, education: 1, profile_picture: 1});
+        const doctors = await Doctor.find().select({first_name: 1, last_name: 1, designation: 1, degree: 1, profile_picture: 1});
         const popular_doctors = doctorListResource(doctors, true);
         const nearest_chambers = await Chamber.find().select({name: 1, "area": "$upazila.name", operating_hours: 1});
         const tips = await Tip.find({status: true}).select({_id: 0, title: 1, details: 1});
@@ -31,7 +31,7 @@ module.exports.homePageInitData = async (req, res) => {
             chambers: chamber_options.length,
             doctors: totalDoctores,
         };
-        res.json(responseAPI(true, "Division list", { chamber_options, speciality_options, popular_doctors, nearest_chambers, tips, testimonials, resource}));
+        res.json(responseAPI(true, "Division list", { popular_doctors, nearest_chambers, tips, testimonials, resource, chamber_options, speciality_options}));
 
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
