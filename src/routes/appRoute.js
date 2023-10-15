@@ -15,6 +15,7 @@ router.get("/", (req, res) => {
 router.get('/init-home-page', homeController.homePageInitData);
 
 //doctors
+router.get('/doctors/form-helper-data', doctorController.searchFormHelperData);
 router.get('/doctors', doctorController.list);
 router.get('/doctors/:id', doctorController.details);
 

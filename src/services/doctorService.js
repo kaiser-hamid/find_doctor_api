@@ -1,6 +1,12 @@
 const he = require('he');
 const moment = require("moment");
 const {baseURL} = require("../configs/app");
+const {responseAPI} = require("../utils/general.util");
+
+//models
+const Speciality = require("../models/Speciality");
+const Chamber = require("../models/Chamber");
+const Designation = require("../models/Designation");
 
 module.exports.doctorDetailsDataProcess = (doctor) => {
     const data = {
@@ -50,5 +56,38 @@ const getDoctorChambers = (chambers) => {
     });
     return data;
 
+}
+
+module.exports.searchHelperData = async () => {
+    try{
+        const chamber_options = await Chamber.find().select({_id: 0, id: "$_id", label: "$name.en", value: "$_id"});
+        const speciality_options = await Speciality.aggregate([
+            {$match: {status: true}},
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            },
+            {$sort: {"label.en": 1}}
+        ]);
+        const designation_options = await Designation.aggregate([
+            {
+                $project: {
+                    _id: 0,
+                    id: "$_id",
+                    label: "$name.en",
+                    value: "$name.en"
+                }
+            },
+            {$sort: {"label.en": 1}}
+        ]);
+        return {chamber_options, designation_options, speciality_options }
+
+    }catch (e) {
+        return {chamber_options: null, designation_options: null, speciality_options: null };
+    }
 }
 

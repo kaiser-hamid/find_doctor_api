@@ -1,18 +1,56 @@
+const Mongoose = require("mongoose");
 const Doctor = require('../models/Doctor');
 
 const {doctorListResource} = require('../resources/doctorResource');
-const {doctorDetailsDataProcess} = require('../services/doctorService');
+const {doctorDetailsDataProcess, searchHelperData} = require('../services/doctorService');
 const {responseAPI} = require("../utils/general.util");
+
+module.exports.searchFormHelperData = async (req, res) => {
+    try {
+        const data = await searchHelperData();
+        res.json(responseAPI(true, "Form data", data));
+    } catch (e) {
+        res.status(400).json(responseAPI(false, e.message));
+    }
+}
 
 module.exports.list = async (req, res) => {
     try {
-        const doctors = await Doctor.find().select({
-            first_name: 1,
-            last_name: 1,
-            degree: 1,
-            designation: 1,
-            profile_picture: 1
-        });
+        const {name, chamber, speciality} = req.query;
+        let matchStage = {
+            $or: []
+        };
+        if (name) {
+            matchStage.$or.push({ full_name_en: { $regex: `.*${name}.*`, $options: "i" } });
+            matchStage.$or.push({ full_name_bn: { $regex: `.*${name}.*`, $options: "i" } });
+        }
+        if (chamber) {
+            matchStage.chamber = new Mongoose.Types.ObjectId(chamber);
+        }
+        if (speciality) {
+            matchStage.speciality = speciality;
+        }
+        if (Object.keys(matchStage.$or).length === 0) {
+            delete matchStage.$or;
+        }
+        if (Object.keys(matchStage).length === 0) {
+            matchStage = {};
+        }
+        const doctors = await Doctor.aggregate([
+            {
+                $project: {
+                    full_name_en: {$concat : ["$first_name.en", " ", "$last_name.en"]},
+                    full_name_bn: {$concat : ["$first_name.bn", " ", "$last_name.bn"]},
+                    degree: 1,
+                    designation: 1,
+                    profile_picture: 1,
+                    speciality: 1,
+                    chamber: "$chamber._id",
+                }
+            },
+            { $match: matchStage },
+            {$sort: {full_name_en: 1}}
+        ]);
         if (!doctors.length) {
             throw new Error("No record found");
         }
