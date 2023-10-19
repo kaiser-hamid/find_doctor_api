@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const chamberSchema = new mongoose.Schema({
     name: {type: Object, required: true},
     address: {type: Object, required: true},
-    phone: String,
+    phone: [String],
     email: String,
     website: String,
     division: Object,
@@ -15,6 +15,7 @@ const chamberSchema = new mongoose.Schema({
     operating_hours: Object,
     logo: String,
     reg_no: String,
+    about: Object,
     rating: Number,
     active_status: Number,
     remarks: Object,
