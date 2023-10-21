@@ -13,7 +13,7 @@ module.exports.chamberList = async (req, res) => {
             throw new Error("No record found");
         }
         const chamberData = chamberListResource(chambers, true);
-        res.json(responseAPI(true, "Chamber F list", chamberData));
+        res.json(responseAPI(true, "Chamber list", chamberData));
     } catch (e) {
         res.status(400).json(responseAPI(false, e.message));
     }
