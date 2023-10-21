@@ -42,6 +42,7 @@ module.exports.list = async (req, res) => {
                     full_name_en: {$concat : ["$first_name.en", " ", "$last_name.en"]},
                     full_name_bn: {$concat : ["$first_name.bn", " ", "$last_name.bn"]},
                     degree: 1,
+                    gender: 1,
                     designation: 1,
                     profile_picture: 1,
                     speciality: 1,
@@ -66,8 +67,6 @@ module.exports.details = async (req, res) => {
     try {
         const {id} = req.params;
         const doctor = await Doctor.findById(id).populate({path: 'chamber._id', model: 'Chamber', select: {_id: 0, upazila: 1, district: 1, geo_location: 1}});
-        // res.json(responseAPI(true, "Doctor details", doctor));
-        // return
         if (!doctor) {
             throw new Error("No record found");
         }

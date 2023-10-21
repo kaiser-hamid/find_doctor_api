@@ -27,6 +27,7 @@ module.exports.homePageInitData = async (req, res) => {
                 $project: {
                     full_name_en: {$concat : ["$first_name.en", " ", "$last_name.en"]},
                     full_name_bn: {$concat : ["$first_name.bn", " ", "$last_name.bn"]},
+                    gender: 1,
                     degree: 1,
                     designation: 1,
                     profile_picture: 1,
