@@ -17,6 +17,7 @@ module.exports.doctors = async (req, res) => {
             first_name: 1,
             last_name: 1,
             profile_picture: 1,
+            gender: 1,
             phone: 1,
             email: 1,
             address: 1,

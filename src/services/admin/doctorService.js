@@ -32,19 +32,21 @@ module.exports.saveDoctorDataProcess = async ({body, files}) => {
             en: body.last_name,
             bn: body.last_name_bn
         },
-        phone: body.phone,
-        email: body.email,
+        phone: body.phone || null,
+        email: body.email || null,
         gender: body.gender,
-        about_doctor: {
-            en: body.about_doctor,
-            bn: body.about_doctor_bn,
-        },
-        bmdc_reg_no: body.bmdc_reg_no,
-        experience: body.experience,
+        bmdc_reg_no: body.bmdc_reg_no || null,
+        experience: body.experience || null,
         institute: body.institute,
         designation: body.designation,
         degree: body.degree,
         speciality: body.speciality || [],
+    }
+    if (body.about_doctor || body.about_doctor_bn) {
+        data.about_doctor = {
+            en: body.about_doctor || null,
+            bn: body.about_doctor_bn || null,
+        }
     }
     if (profilePicturePath) {
         data.profile_picture = profilePicturePath;
@@ -58,14 +60,14 @@ module.exports.prepareEditFormData = (doctor) => {
         first_name_bn: doctor.first_name?.bn,
         last_name: doctor.last_name?.en,
         last_name_bn: doctor.last_name?.bn,
-        phone: doctor.phone,
-        email: doctor.email,
-        profile_picture_preview: baseURL + doctor.profile_picture,
+        phone: doctor.phone || "",
+        email: doctor.email || "",
+        profile_picture_preview: doctor.profile_picture ? baseURL + doctor.profile_picture : null,
         gender: doctor.gender,
-        bmdc_reg_no: doctor.bmdc_reg_no,
-        about_doctor: doctor.about_doctor?.en,
-        about_doctor_bn: doctor.about_doctor?.bn,
-        experience: doctor.experience,
+        bmdc_reg_no: doctor.bmdc_reg_no || "",
+        about_doctor: doctor?.about_doctor?.en || "",
+        about_doctor_bn: doctor?.about_doctor?.bn || "",
+        experience: doctor.experience || "",
         degree: doctor.degree?.map(d => {
             return {id: d, label: d, value: d}
         }),
@@ -96,19 +98,21 @@ module.exports.updateDoctorDataProcess = async ({body, files}, doctor) => {
             en: body.last_name,
             bn: body.last_name_bn
         },
-        phone: body.phone,
-        email: body.email,
+        phone: body.phone || null,
+        email: body.email || null,
         gender: body.gender,
-        about_doctor: {
-            en: body.about_doctor,
-            bn: body.about_doctor_bn,
-        },
-        bmdc_reg_no: body.bmdc_reg_no,
-        experience: body.experience,
+        bmdc_reg_no: body.bmdc_reg_no || null,
+        experience: body.experience || null,
         institute: body.institute,
         degree: body.degree,
         designation: body.designation,
         speciality: body.speciality || [],
+    }
+    if( body.about_doctor || body.about_doctor_bn ){
+        data.about_doctor = {
+            en: body.about_doctor || null,
+            bn: body.about_doctor_bn || null,
+        }
     }
     if (profilePicturePath) {
         data.profile_picture = profilePicturePath;
