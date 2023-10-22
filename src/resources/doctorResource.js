@@ -8,7 +8,8 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             profile_picture: data.profile_picture ? baseURL + data.profile_picture : null,
             gender: data.gender || "male",
             designation: data.designation,
-            degree: data.degree
+            degree: data.degree,
+            experience: data.experience,
         }
     }
     const collection = [];
@@ -19,7 +20,8 @@ module.exports.doctorListResource = (data, isCollection = false) => {
             profile_picture: item.profile_picture ? baseURL + item.profile_picture: null,
             gender: item.gender || "male",
             designation: item.designation,
-            degree: item.degree
+            degree: item.degree,
+            experience: item.experience,
         });
     }
     return collection;

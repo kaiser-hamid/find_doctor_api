@@ -16,7 +16,8 @@ module.exports.searchFormHelperData = async (req, res) => {
 
 module.exports.list = async (req, res) => {
     try {
-        const {name, chamber, speciality} = req.query;
+        //designation, degree, gender, experience
+        const {name, chamber, speciality, designation, degree, gender, experience} = req.query;
         let matchStage = {
             $or: []
         };
@@ -29,6 +30,19 @@ module.exports.list = async (req, res) => {
         }
         if (speciality) {
             matchStage.speciality = speciality;
+        }
+        if (degree) {
+            matchStage.degree = degree;
+        }
+        if (designation) {
+            matchStage.designation = designation;
+        }
+        if (gender) {
+            matchStage.gender = gender;
+        }
+        if (experience) {
+            const [exp_min, exp_max] = experience.split(/\s*-\s*/)
+            matchStage.experience = {$gte: exp_min, $lte: exp_max};
         }
         if (Object.keys(matchStage.$or).length === 0) {
             delete matchStage.$or;
@@ -43,6 +57,7 @@ module.exports.list = async (req, res) => {
                     full_name_bn: {$concat : ["$first_name.bn", " ", "$last_name.bn"]},
                     degree: 1,
                     gender: 1,
+                    experience: 1,
                     designation: 1,
                     profile_picture: 1,
                     speciality: 1,
